@@ -69,35 +69,32 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self     where T: Ord
+	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self where T: Ord + Copy
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
-        };
-        let current_a = list_a.start;
-        let current_b = list_b.start;
-        while let Some(a)=current_a &&let Some(b)=current_b
+        let mut merged = LinkedList::new();
+        let mut current_a = list_a.start;
+        let mut current_b = list_b.start;
+        while let (Some(a), Some(b)) = (current_a, current_b) 
         {
-            if unsafe{(*a.as_ptr()).val<(*b.as_ptr()).val}
-             self.add(unsafe{(*a.as_ptr()).val});
-             current_a = unsafe{(*a.as_ptr()).next};
+            if unsafe{(*a.as_ptr()).val}<unsafe{(*b.as_ptr()).val}
+            { merged.add(unsafe{(*a.as_ptr()).val});
+             current_a = unsafe{(*a.as_ptr()).next};}
              else
-             self.add(unsafe{(*b.as_ptr()).val});
-             current_b = unsafe{(*b.as_ptr()).next};
+             {merged.add(unsafe{(*b.as_ptr()).val});
+             current_b = unsafe{(*b.as_ptr()).next};}
         };
         while let Some(a)=current_a
         {
-            self.add(unsafe{(*a.as_ptr()).val});
+            merged.add(unsafe{(*a.as_ptr()).val});
             current_a = unsafe{(*a.as_ptr()).next};
         };
         while let Some(b)=current_b
         {
-            self.add(unsafe{(*b.as_ptr()).val});
+            merged.add(unsafe{(*b.as_ptr()).val});
             current_b = unsafe{(*b.as_ptr()).next};
         };
+        merged
 	}
 }
 
