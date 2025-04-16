@@ -7,6 +7,10 @@
 
 fn sort<T>(array: &mut [T]){
 	//TODO
+    let mut a = array[0];
+    for i in array[1..array.length-1]:
+      if 
+      
 }
 #[cfg(test)]
 mod tests {
