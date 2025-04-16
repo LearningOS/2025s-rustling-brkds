@@ -3,13 +3,19 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
+// I AM  DONE
 
-fn sort<T>(array: &mut [T]){
+fn sort<T: std::cmp::PartialOrd + Copy>(array: &mut [T]){
 	//TODO
     let mut a = array[0];
-    for i in array[1..array.length-1]:
-      if 
+    for i in 0..array.len()
+      {for j in 0..array.len()-i-1
+      {if array[j]>array[j+1]
+      {let c = array[j];
+       array[j] = array[j+1];
+       array[j+1] = c;}
+      }
+    }
       
 }
 #[cfg(test)]
