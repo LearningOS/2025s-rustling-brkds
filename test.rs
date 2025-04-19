@@ -1,5 +1,8 @@
+use std::collections::HashMap;
 fn main() {
-    let a  =Box::new(5);
-    let c= &a;
-    println!("Hello, world! {a} {c}");
+    let mut map = HashMap::new();
+	map.insert(')','(');
+	map.insert(']','[');
+	map.insert('}','{');
+    println!("Hello, world!  {:?}",map.values());
 }

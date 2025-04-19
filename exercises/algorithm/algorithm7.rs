@@ -32,7 +32,8 @@ impl<T> Stack<T> {
 	}
 	fn pop(&mut self) -> Option<T> {
 		// TODO
-		None
+		if self.is_empty(){None}
+		else{self.size-=1;self.data.pop()}
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -98,11 +99,31 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 		self.stack.pop()
 	}
 }
-
+use std::collections::HashMap;
 fn bracket_match(bracket: &str) -> bool
 {
-	//TODO
+	let chars: Vec<char> = bracket.chars().collect(); 
+	let mut map = HashMap::new();
+	map.insert(')','(');
+	map.insert(']','[');
+	map.insert('}','{');
+	let mut stack = Stack::new();
+	for i in &chars{
+         if map.values().any(|&v| v == *i) {
+			stack.push(i);
+		 }
+		 else if map.contains_key(i){
+			if let n = stack.pop(){
+                if n!=map.get(i){return false;}
+			}else {
+				return false;
+			}
+		 }
+	};
+	if !stack.is_empty(){false}
+	else{
 	true
+	}
 }
 
 #[cfg(test)]
