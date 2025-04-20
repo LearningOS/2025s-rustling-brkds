@@ -13,6 +13,7 @@ impl fmt::Display for NodeNotInGraph {
         write!(f, "accessing a node that is not in the graph")
     }
 }
+#[derive(Debug)]
 pub struct UndirectedGraph {
     adjacency_table: HashMap<String, Vec<(String, i32)>>,
 }
@@ -30,6 +31,8 @@ impl Graph for UndirectedGraph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        let se = self.adjacency_table_mutable();
+        se.insert(edge.0.to_string(),vec![(edge.1.to_string(),edge.2)]);
     }
 }
 pub trait Graph {
@@ -42,6 +45,9 @@ pub trait Graph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        let se = self.adjacency_table_mutable();
+        let v = vec![(edge.1.to_string(),edge.2)];
+        se.insert(edge.0.to_string(),v);
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
@@ -54,6 +60,8 @@ pub trait Graph {
         for (from_node, from_node_neighbours) in self.adjacency_table() {
             for (to_node, weight) in from_node_neighbours {
                 edges.push((from_node, to_node, *weight));
+                edges.push((to_node, from_node, *weight));
+
             }
         }
         edges
@@ -78,6 +86,7 @@ mod test_undirected_graph {
             (&String::from("c"), &String::from("b"), 10),
         ];
         for edge in expected_edges.iter() {
+            println!("111 {:?} ",graph);
             assert_eq!(graph.edges().contains(edge), true);
         }
     }
