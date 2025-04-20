@@ -93,17 +93,17 @@ where
         Self::new(|a, b| a > b)
     }
 }
-
+#[derive(Debug)]
 impl<T> Iterator for Heap<T>
 where
-    T: Default+Clone+ std::fmt::Debug,
+    T: Default+Clone,
 {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
         //TODO
         if self.count==0{None}
-        else{
+        else{println!("{:?}",self.items);
             let n = self.items[1].clone();
             self.items[1] = self.items[self.count].clone();
             self.items.pop();
