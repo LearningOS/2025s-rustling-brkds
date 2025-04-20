@@ -6,7 +6,7 @@
 
 use std::cmp::Ord;
 use std::default::Default;
-
+#[derive(Debug)]
 pub struct Heap<T>
 where
     T: Default,
@@ -18,7 +18,7 @@ where
 
 impl<T> Heap<T>
 where
-    T: Default,
+    T: Default +Ord+ Clone,
 {
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
@@ -38,6 +38,19 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.items.push(value);
+        self.count+=1;
+        let mut n = self.count;
+        while n!=0 {
+            if n/2!=0&&(self.comparator)(&self.items[n],&self.items[n/2]){
+                let t = self.items[n].clone();
+                self.items[n] = self.items[n/2].clone();
+                self.items[n/2] = t;
+                n = n/2;
+            }
+            else{break;}
+        }
+        
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,13 +71,17 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        if (self.comparator)(&self.items[idx*2],&self.items[idx*2+1])
+        {
+            idx*2
+        }
+        else{idx*2+1}
     }
 }
 
 impl<T> Heap<T>
 where
-    T: Default + Ord,
+    T: Default + Ord + Clone,
 {
     /// Create a new MinHeap
     pub fn new_min() -> Self {
@@ -79,13 +96,33 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default+Clone+ std::fmt::Debug,
 {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+        if self.count==0{None}
+        else{
+            let n = self.items[1].clone();
+            self.items[1] = self.items[self.count].clone();
+            self.items.pop();
+
+            self.count-=1;
+            let mut s = 1;
+            while  s<=self.count{
+                let mut l =s*2;
+                let r = l+1;
+
+                if l<=self.count&&r<=self.count&&(self.comparator)(&self.items[r],&self.items[l]){l = r;}
+                if l<=self.count&&r<=self.count&&!(self.comparator)(&self.items[s],&self.items[l]){let t = self.items[s].clone();self.items[s] = self.items[l].clone();self.items[l] = t;
+                s = l;}
+                else{break;}
+            }
+    
+            Some(n)
+        }
+		
     }
 }
 
@@ -95,7 +132,7 @@ impl MinHeap {
     #[allow(clippy::new_ret_no_self)]
     pub fn new<T>() -> Heap<T>
     where
-        T: Default + Ord,
+        T: Default + Ord +Clone,
     {
         Heap::new(|a, b| a < b)
     }
@@ -107,7 +144,7 @@ impl MaxHeap {
     #[allow(clippy::new_ret_no_self)]
     pub fn new<T>() -> Heap<T>
     where
-        T: Default + Ord,
+        T: Default + Ord+Clone,
     {
         Heap::new(|a, b| a > b)
     }
