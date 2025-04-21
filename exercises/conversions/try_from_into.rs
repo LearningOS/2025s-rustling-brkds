@@ -41,6 +41,12 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let vec = vec![tuple.0, tuple.1, tuple.2];
+        if vec.iter().filter(|&x| *x>=0&&*x<=255).count()==3{
+          Ok(Color{red: tuple.0 as u8,
+            green: tuple.1 as u8,
+            blue: tuple.2 as u8})}
+        else{Err(IntoColorError::IntConversion)}
     }
 }
 
@@ -48,13 +54,37 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        if arr.iter().filter(|&x| *x>=0&&*x<=255).count()==3{
+            Ok(Color{red: arr[0] as u8,
+              green: arr[1] as u8,
+              blue: arr[2] as u8})}
+          else{Err(IntoColorError::IntConversion)}
     }
 }
 
 // Slice implementation
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
+
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        // 1. 检查切片长度
+        if slice.len() != 3 {
+            return Err(IntoColorError::BadLen);
+        }
+
+        // 2. 检查每个元素是否在有效范围内 (0..=255)
+        for &value in slice {
+            if value < 0 || value > 255 {
+                return Err(IntoColorError::IntConversion);
+            }
+        }
+
+        // 3. 如果都通过检查，返回成功的 Color 实例
+        Ok(Color {
+            red: slice[0] as u8,
+            green: slice[1] as u8,
+            blue: slice[2] as u8,
+        })
     }
 }
 
